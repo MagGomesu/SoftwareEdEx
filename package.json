@@ -1,0 +1,24 @@
+{
+  "author": "",
+  "dependencies": {
+    "autoprefixer": "^10.4.16",
+    "cssnano": "^6.0.1",
+    "postcss": "^8.4.31",
+    "postcss-cli": "^10.1.0",
+    "tailwindcss": "^3.3.5"
+  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "softwareedex",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "npx postcss SoftwareEdEx/static/css/styles.css -o SoftwareEdEx/static/css/main.css"
+  },
+  "version": "1.0.0"
+}
+
+
+
+
