@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-      "./persona/templates/**/*.html",
+    "./templates/**/*.html",
+    "./SoftwareEdEx/templates/**/*.html",
+    "./**/*.html",
   ],
   theme: {
     extend: {},

@@ -35,3 +35,19 @@ class Persona(models.Model):
 
 	def __str__(self):
 		return f"{self.nombre} {self.apellido}"
+
+	class Meta:
+		abstract = True
+
+
+class Participante(Persona):
+	estado = models.CharField(max_length=50)
+
+
+class Docente(Persona):
+	area = models.CharField(max_length=100)
+	tipoContrato = models.CharField(max_length=100)
+	tarifaHora = models.IntegerField()
+
+class AsistenteExperiencia(Persona):
+	programaAcademicoQueCursa = models.CharField(max_length=100)
