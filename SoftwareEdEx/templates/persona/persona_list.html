@@ -1,38 +1,57 @@
 {% extends "base.html" %}
 
-{% block title %}Page Title{% endblock title %}
+{% block title %}Estudiantes List{% endblock title %}
 
 {% block content %}
-    <!-- Your page-specific content goes here -->
 {% load static %}
 <div class="container mx-auto mt-10">
-    <table class="table-auto w-full">
+    <div class="relative overflow-x-auto overflow-y-auto max-w-[100%] max-h-[100%]">
+        <table class="min-w-full table-auto">
         <thead>
             <tr>
-                <th class="px-4 py-2">Name</th>
-                <th class="px-4 py-2">Title</th>
+                <th class="px-4 py-2">Tipo de ID</th>
+                <th class="px-4 py-2">Número Identificación</th>
+                <th class="px-4 py-2">Código Uniandes</th>
+                <th class="px-4 py-2">Género</th>
+                <th class="px-4 py-2">Nombre</th>
+                <th class="px-4 py-2">Apellido</th>
+                <th class="px-4 py-2">Profesión</th>
+                <th class="px-4 py-2">Cargo</th>
+                <th class="px-4 py-2">Nacionalidad</th>
+                <th class="px-4 py-2">Dirección</th>
                 <th class="px-4 py-2">Email</th>
-                <th class="px-4 py-2">Role</th>
+                <th class="px-4 py-2">Celular</th>
+                <th class="px-4 py-2">Estado</th>
                 <th class="px-4 py-2">Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for user in users %}
+            {% for estudiante in estudiantes %}
                 <tr>
-                    <td class="border px-4 py-2">{{ user.name }}</td>
-                    <td class="border px-4 py-2">{{ user.title }}</td>
-                    <td class="border px-4 py-2">{{ user.email }}</td>
-                    <td class="border px-4 py-2">{{ user.role }}</td>
-                    <td class="border px-4 py-2">
-                        <a href="{% url 'edit_user' user.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
-                        <a href="{% url 'delete_user' user.id %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</a>
-                    </td>
+                    <td class="border px-4 py-2">{{ estudiante.tipo_identificacion }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.numero_identificacion }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.codigoUniandes }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.genero }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.nombre }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.apellido }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.profesion }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.cargo }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.nacionalidad }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.direccion }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.email }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.celular }}</td>
+                    <td class="border px-4 py-2">{{ estudiante.estado }}</td>
+
+                    <td class="border px-4 py-2"><a href="{% url 'edit_estudiante' estudiante.id %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a></td>
+                    <td class="border px-4 py-2"><a href="{% url 'delete_estudiante' estudiante.id %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td class="border px-4 py-2" colspan="14">No students found</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
-
-
-    <!-- More content -->
 {% endblock content %}

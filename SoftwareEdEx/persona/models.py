@@ -22,7 +22,7 @@ class Persona(models.Model):
 	id = models.AutoField(primary_key=True)
 
 	numero_identificacion = models.CharField(max_length=20)
-	codigoUniandes = models.PositiveIntegerField()
+	codigo_uniandes = models.PositiveIntegerField()
 	genero = models.CharField(max_length=1)
 	nombre = models.CharField(max_length=255)
 	apellido = models.CharField(max_length=255)
@@ -40,14 +40,18 @@ class Persona(models.Model):
 		abstract = True
 
 
-class Participante(Persona):
+class Estudiante(Persona):
 	estado = models.CharField(max_length=50)
 
 
 class Docente(Persona):
 	area = models.CharField(max_length=100)
-	tipoContrato = models.CharField(max_length=100)
-	tarifaHora = models.IntegerField()
+	tipo_contrato = models.CharField(max_length=100)
+	tarifa_hora = models.IntegerField()
 
 class AsistenteExperiencia(Persona):
-	programaAcademicoQueCursa = models.CharField(max_length=100)
+	programa_academico_que_cursa = models.CharField(max_length=100)
+
+	class Meta:
+		verbose_name = "Asistente de experiencia"
+		verbose_name_plural = "Asistentes de experiencia"

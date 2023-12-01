@@ -572,6 +572,10 @@ video {
   position: static;
 }
 
+.relative {
+  position: relative;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -597,12 +601,36 @@ video {
   height: 100vh;
 }
 
+.max-h-\[400px\] {
+  max-height: 400px;
+}
+
+.max-h-\[100\%\] {
+  max-height: 100%;
+}
+
 .w-64 {
   width: 16rem;
 }
 
-.w-full {
-  width: 100%;
+.min-w-full {
+  min-width: 100%;
+}
+
+.max-w-\[800px\] {
+  max-width: 800px;
+}
+
+.max-w-\[80\%\] {
+  max-width: 80%;
+}
+
+.max-w-\[95\%\] {
+  max-width: 95%;
+}
+
+.max-w-\[100\%\] {
+  max-width: 100%;
 }
 
 .flex-grow {
@@ -615,6 +643,18 @@ video {
 
 .flex-col {
   flex-direction: column;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
 }
 
 .rounded {

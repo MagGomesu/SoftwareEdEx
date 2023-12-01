@@ -22,3 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('persona/', include('persona.urls')),
 ]
+admin.site.site_header = "Panel de administracion - Educación Ejecutiva"
+admin.site.site_title = "EdEx Portal"
+admin.site.index_title = "Welcome to UMSRA Researcher Portal"
