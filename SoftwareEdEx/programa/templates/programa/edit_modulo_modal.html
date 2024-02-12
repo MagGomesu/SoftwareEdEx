@@ -1,0 +1,13 @@
+<form method="post" action="{% url 'edit_modulo' pk=form.instance.pk %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+        {{ form.nombre }}
+        {% for error in form.nombre.errors %}
+            <div class="invalid-feedback">
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary save-button">Guardar</button>
+</form>

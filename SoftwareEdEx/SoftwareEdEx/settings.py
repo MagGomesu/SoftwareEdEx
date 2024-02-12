@@ -35,7 +35,26 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# settings.py
+
+JAZZMIN_SETTINGS = {
+    "custom_links": {
+        "programa": [
+            {
+                "name": "Programas",
+                "url": "view_programa",  # Assuming 'programa' is your app name
+                "icon": "fas fa-circle",
+                "permissions": ["admin.view_programa"]  # Adjust the permission as needed
+            },
+        ]
+    },
+    # ... other settings
+}
+
+
+
 INSTALLED_APPS = [
+	'jazzmin',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -43,6 +62,7 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'persona',
+	'programa'
 
 ]
 
@@ -69,6 +89,7 @@ TEMPLATES = [
 				'django.template.context_processors.request',
 				'django.contrib.auth.context_processors.auth',
 				'django.contrib.messages.context_processors.messages',
+
 			],
 		},
 	},

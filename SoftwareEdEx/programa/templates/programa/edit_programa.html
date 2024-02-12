@@ -1,0 +1,275 @@
+{% extends "admin/base.html" %}
+{% block title %} {{ site_title }} {{ block.super }} {% endblock %}
+{% block content_title %}Programas{% endblock %}
+
+{% block breadcrumbs %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'admin:app_list' app_label='programa' %}">Programas</a></li>
+    <li class="breadcrumb-item active">Editar Programa</li>
+</ol>
+{% endblock %}
+
+{% block page_actions %}
+<div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
+<button type="button" class="btn btn-success float-right" ><i class="fa fa-save">&nbsp;&nbsp;</i>Guardar Cambios</button>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+    .handle {
+        cursor: move;
+        margin-right: auto;
+    }
+
+    .modal-backdrop {
+        z-index: 1040 !important;
+    }
+
+.modal .modal-dialog .modal-content .modal-header {
+    z-index: 1050 !important;
+
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+<!-- Modal Placeholder -->
+<!-- Modal -->
+<div class="modal fade" id="editModuloModal" tabindex="-1" role="dialog" aria-labelledby="editModuloModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModuloModalLabel">Edit Modulo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- The form or content to edit the modulo will go here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<form id="updateForm" method="post" action="{% url 'save_programa' %}">
+    {% csrf_token %}
+    <!-- Hidden input field for storing IDs of deleted Clases -->
+    <input type="hidden" name="deletedClases" id="deletedClases" value="">
+
+    <!-- Existing content -->
+    <!-- Add the rest of your form fields here -->
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<div class="container mt-4">
+    <div id="modulos-container" class="list-group" data-group="modulos">
+            {% for modulo in programa.modulos.all %}
+        <div class="list-group-item list-group-item-primary" data-modulo-id="{{ modulo.id }}">
+            <div class="d-flex justify-content-start align-items-center">
+                <div class="handle mr-3"><i class="fa fa-arrows-alt"></i></div>
+                <div class="flex-grow-1">
+                    <strong>Modulo:</strong> <span class="modulo-name">{{ modulo.nombre }}</span>
+                </div>
+                <!---<a href="{% url 'edit_modulo' modulo.id %}">--->
+                <button type="button" class="edit-modulo btn btn-outline-secondary btn-sm ml-2" data-modulo-id="{{ modulo.id }}" data-bs-toggle="modal" data-bs-target="#editModuloModal">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <!---</a>--->
+                <button type="button" class="delete-modulo btn btn-outline-danger btn-sm ml-2" data-modulo-id="{{ modulo.id }}">
+                    <i class="fa fa-trash"></i>
+                </button>
+
+            </div>
+            <div class="list-group mt-2" data-group="sesiones">
+                {% for sesion in modulo.sesiones.all %}
+                <div class="list-group-item list-group-item-info" data-sesion-id="{{ sesion.id }}">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <div class="handle mr-3"><i class="fa fa-arrows-alt"></i></div>
+                        <div class="flex-grow-1">
+                            <strong>Sesion:</strong> {{ sesion.nombre }}
+                        </div>
+                        <button type="button" class="delete-modulo btn btn-outline-secondary btn-sm ml-2" data-modulo-id="{{ modulo.id }}">
+                        <i class="fa fa-edit"></i>
+                        </button>
+
+                        <button type="button" class="delete-sesion btn btn-outline-danger btn-sm ml-2" data-sesion-id="{{ sesion.id }}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+
+                    </div>
+                    <div class="list-group mt-2" data-group="clases">
+                        {% for clase in sesion.clases.all %}
+                        <div class="list-group-item" data-clase-id="{{ clase.id }}">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div class="handle mr-3"><i class="fa fa-arrows-alt"></i></div>
+                                <div class="flex-grow-1">
+                                    <strong>Clase: </strong>{{ clase.get_ubicacion_display }} - {{ clase.fecha_de_clase }} from {{ clase.hora_inicio }} to {{ clase.hora_fin }}
+                                </div>
+                                <button type="button" class="delete-modulo btn btn-outline-secondary btn-sm ml-2" data-modulo-id="{{ modulo.id }}">
+                                <i class="fa fa-edit"></i>
+                                </button>
+                                <button type="button" class="delete-clase btn btn-outline-danger btn-sm ml-2" data-clase-id="{{ clase.id }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+
+
+
+
+
+
+{% block extrajs %}
+<script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
+<script>
+$(document).ready(function() {
+    $('.edit-modulo').click(function() {
+
+        var moduloId = $(this).data('modulo-id');
+        var baseUrl = window.location.protocol + '//' + window.location.host; // Dynamically get the base URL
+        var targetUrl = baseUrl + '/programa/programa/modulo/' + moduloId + '/edit'; // Construct the target URL
+        $('#editModuloModal .save-button').data('modulo-id', moduloId);
+        $.ajax({
+            url: targetUrl,
+            success: function(data) {
+                $('#editModuloModal .modal-body').html(data);
+                //$('#editModuloModal').modal('show');
+                $('#editModuloModal').appendTo("body").modal('show');
+            }
+        });
+    });
+
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    $('#editModuloModal').on('submit', 'form', function(e) {
+        e.preventDefault(); // Prevent the form from submitting through standard HTTP request
+
+        var form = $(this);
+        var formData = {}; // Object to store your form data
+        form.find('input, select, textarea').each(function() {
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            formData[name] = value; // Add each form field to the formData object
+        });
+
+        // Assuming the ID of the module is stored in a data attribute of the form or another element
+        var moduloId = form.data('modulo-id');
+
+        // Store the formData object in sessionStorage or another temporary storage
+        var modulosData = sessionStorage.getItem('modulosData') ? JSON.parse(sessionStorage.getItem('modulosData')) : {};
+        modulosData[moduloId] = formData;
+        sessionStorage.setItem('modulosData', JSON.stringify(modulosData));
+
+        var newName = modulosData[moduloId] && modulosData[moduloId]['nombre'] ? modulosData[moduloId]['nombre'] : 'Default Name';
+
+        $(`[data-modulo-id="${moduloId}"] .modulo-name`).text(newName);
+
+        // Close the modal
+        $('#editModuloModal').modal('hide');
+
+        // Update the UI as needed to indicate the changes are pending
+        // This could be adding a visual indicator or updating text
+
+        // Prevent the actual submission
+        return false;
+    });
+
+
+    // Initialize sortable for 'modulos'
+    new Sortable(document.getElementById('modulos-container'), {
+        group: 'modulos',
+        animation: 150,
+        fallbackOnBody: true,
+        handle: ".handle",
+        swapThreshold: 0.65,
+        filter: ".btn-link",
+        preventOnFilter: false
+    });
+
+    // Initialize sortable for each 'sesiones' container within modulos
+    document.querySelectorAll('[data-group="sesiones"]').forEach(function(el) {
+        new Sortable(el, {
+            group: 'sesiones',
+            animation: 150,
+            fallbackOnBody: true,
+            handle: ".handle",
+            swapThreshold: 0.65,
+            filter: ".btn-link",
+            preventOnFilter: false
+        });
+    });
+
+    // Initialize sortable for each 'clases' container within sesiones
+    document.querySelectorAll('[data-group="clases"]').forEach(function(el) {
+        new Sortable(el, {
+            group: 'clases',
+            animation: 150,
+            fallbackOnBody: true,
+            handle: ".handle",
+            swapThreshold: 0.65,
+            filter: ".btn-link",
+            preventOnFilter: false
+        });
+    });
+
+    document.querySelectorAll('.delete-clase').forEach(button => {
+        button.addEventListener('click', function () {
+            const claseId = this.getAttribute('data-clase-id');
+            const claseElement = document.querySelector(`.list-group-item[data-clase-id="${claseId}"]`);
+            claseElement.style.display = 'none'; // Optionally hide the element
+            const deletedInput = document.getElementById('deletedClases');
+            let deletedIds = deletedInput.value ? deletedInput.value.split(',') : [];
+            if (!deletedIds.includes(claseId)) {
+                deletedIds.push(claseId);
+            }
+            deletedInput.value = deletedIds.join(',');
+
+            // Rest of the deletion logic
+        });
+    });
+    // Handle deletion of Sesions
+    document.querySelectorAll('.delete-sesion').forEach(button => {
+        button.addEventListener('click', function () {
+            const sesionId = this.getAttribute('data-sesion-id');
+            const sesionElement = document.querySelector(`.list-group-item[data-sesion-id="${sesionId}"]`);
+            sesionElement.style.display = 'none'; // Optionally hide the element
+            // ... rest of the deletion logic for Sesions
+        });
+    });
+
+    // Handle deletion of Modulos
+    document.querySelectorAll('.delete-modulo').forEach(button => {
+        button.addEventListener('click', function () {
+            const moduloId = this.getAttribute('data-modulo-id');
+            const moduloElement = document.querySelector(`.list-group-item[data-modulo-id="${moduloId}"]`);
+            moduloElement.style.display = 'none'; // Optionally hide the element
+            // ... rest of the deletion logic for Modulos
+        });
+    });
+
+    });
+</script>
+{% endblock extrajs %}
+

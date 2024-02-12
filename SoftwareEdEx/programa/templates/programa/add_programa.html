@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+
+{% block title %} {{ site_title }} {{ block.super }} {% endblock %}
+
+{% block content_title %}Programas{% endblock %}
+
+{% block breadcrumbs %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'admin:app_list' app_label='programa' %}">Programas</a></li>
+    <li class="breadcrumb-item active">Añadir Programa</li>
+</ol>
+{% endblock %}
+
+{% block page_actions %}
+<div class="col-12 col-md-auto d-flex align-items-center justify-content-end page-actions">
+<button type="button" class="btn btn-success float-right" ><i class="fa fa-plus-circle">&nbsp;&nbsp;</i>Crear Programa</button>
+</div>
+{% endblock %}
+
+
+{% block content %}
+{{ block.super }}
+{% endblock %}

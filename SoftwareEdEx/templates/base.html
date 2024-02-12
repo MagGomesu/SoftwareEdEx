@@ -2,47 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>{% block title %}My Site{% endblock %}</title>
     {% load static %}
-     <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <!-- Add additional CSS or JS here -->
 </head>
-<body class="bg-gray-100">
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <div class="w-64 bg-gray-800 text-white flex flex-col">
-            <!-- Logo and company name -->
-            <div class="px-4 py-5">
-                <a href="#" class="text-white text-2xl">Company Logo</a>
-            </div>
-
-            <!-- Navigation -->
-            <nav class="flex-grow">
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Dashboard</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Team</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Projects</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Calendar</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Documents</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Reports</a>
-            </nav>
-
-            <!-- Teams section -->
-            <div class="px-4 py-5">
-                <p class="text-gray-400">Your teams</p>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Heroicons</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Tailwind Labs</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-700">Workcation</a>
-            </div>
-        </div>
-
-        <!-- Main content area -->
-        <div class="flex-grow bg-white p-5">
-            <!-- This is the container that can be overridden by child templates in Django -->
-            {% block content %}
-            <!-- Default content goes here -->
-            <p>This is the main content area. Replace this with your content.</p>
-            {% endblock %}
-        </div>
+<body>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
     </div>
+    <footer>
+        {% block footer %}
+        <p>My Django Site ©2024</p>
+        {% endblock %}
+    </footer>
 </body>
 </html>
