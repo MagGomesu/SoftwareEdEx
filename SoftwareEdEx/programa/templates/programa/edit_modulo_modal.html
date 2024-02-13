@@ -1,4 +1,4 @@
-<form method="post" action="{% url 'edit_modulo' pk=form.instance.pk %}">
+<form method="post" data-model-name="modulo" data-modulo-id="{{ modulo_id }}" autocomplete='off'>
     {% csrf_token %}
     <div class="form-group">
         <label for="{{ form.nombre.id_for_label }}">Nombre:</label>

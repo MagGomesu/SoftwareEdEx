@@ -1,11 +1,11 @@
 from django import forms
-from .models import Programa, Modulo
+from .models import Programa, Modulo, Sesion
 
 
 class ProgramaForm(forms.ModelForm):
     class Meta:
         model = Programa
-        fields = '__all__'  # You can specify fields you need
+        fields = '__all__'
 
 class ProgramaFilterForm(forms.Form):
     crn = forms.CharField(widget=forms.TextInput, required=False, label='CRN')
@@ -18,4 +18,10 @@ class ProgramaFilterForm(forms.Form):
 class ModuloForm(forms.ModelForm):
     class Meta:
         model = Modulo
-        fields = ['nombre']  # You can specify fields you need
+        fields = ['nombre']
+
+class SesionForm(forms.ModelForm):
+    class Meta:
+        model = Sesion
+        fields = '__all__'
+        exclude = ['modulo', 'orden_sesion']

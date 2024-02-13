@@ -39,11 +39,11 @@
 {{ block.super }}
 <!-- Modal Placeholder -->
 <!-- Modal -->
-<div class="modal fade" id="editModuloModal" tabindex="-1" role="dialog" aria-labelledby="editModuloModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document" >
     <div class="modal-content" >
       <div class="modal-header">
-        <h5 class="modal-title" id="editModuloModalLabel">Edit Modulo</h5>
+        <h5 class="modal-title" id="editModalLabel">Editar Elemento</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -92,9 +92,11 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <div class="handle mr-3"><i class="fa fa-arrows-alt"></i></div>
                         <div class="flex-grow-1">
-                            <strong>Sesion:</strong> {{ sesion.nombre }}
+                            <strong>Sesion:</strong> <span class="sesion-name">{{ sesion.nombre }}</span>
+                            &nbsp;&nbsp;-&nbsp;&nbsp;
+                            <strong>Tipo:</strong> <span class="tipo-name">{{ sesion.get_tipo_display }}</span>
                         </div>
-                        <button type="button" class="delete-modulo btn btn-outline-secondary btn-sm ml-2" data-modulo-id="{{ modulo.id }}">
+                        <button type="button" class="edit-sesion btn btn-outline-secondary btn-sm ml-2" data-sesion-id="{{ sesion.id }}">
                         <i class="fa fa-edit"></i>
                         </button>
 
@@ -132,38 +134,48 @@
 {% endblock content %}
 
 
-
-
-
-
 {% block extrajs %}
 <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
 <script>
+// Include a script block to define tipo descriptions
+
 $(document).ready(function() {
     $('.edit-modulo').click(function() {
-
         var moduloId = $(this).data('modulo-id');
         var baseUrl = window.location.protocol + '//' + window.location.host; // Dynamically get the base URL
         var targetUrl = baseUrl + '/programa/programa/modulo/' + moduloId + '/edit'; // Construct the target URL
-        $('#editModuloModal .save-button').data('modulo-id', moduloId);
+        $('#editModal .save-button').data('modulo-id', moduloId);
         $.ajax({
             url: targetUrl,
             success: function(data) {
-                $('#editModuloModal .modal-body').html(data);
+                $('#editModal .modal-body').html(data);
                 //$('#editModuloModal').modal('show');
-                $('#editModuloModal').appendTo("body").modal('show');
+                $('#editModal').appendTo("body").modal('show');
             }
         });
     });
 
+    $('.edit-sesion').click(function() {
+        var sesionId = $(this).data('sesion-id');
+        var baseUrl = window.location.protocol + '//' + window.location.host; // Dynamically get the base URL
+        var targetUrl = baseUrl + '/programa/programa/sesion/' + sesionId + '/edit'; // Construct the target URL
+        $('#editModal .save-button').data('sesion-id', sesionId);
+        $.ajax({
+            url: targetUrl,
+            success: function(data) {
+                $('#editModal .modal-body').html(data);
+                $('#editModal').appendTo("body").modal('show');
+            }
+        });
+    });
 });
 
 
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    $('#editModuloModal').on('submit', 'form', function(e) {
+    $('#editModal').on('submit', 'form', function(e) {
         e.preventDefault(); // Prevent the form from submitting through standard HTTP request
 
         var form = $(this);
@@ -174,71 +186,56 @@ document.addEventListener('DOMContentLoaded', function() {
             formData[name] = value; // Add each form field to the formData object
         });
 
-        // Assuming the ID of the module is stored in a data attribute of the form or another element
-        var moduloId = form.data('modulo-id');
+        switch (form.data('model-name')) {
+            case 'modulo':
+                var moduloId = form.data('modulo-id');
+                var modulosData = sessionStorage.getItem('modulosData') ? JSON.parse(sessionStorage.getItem('modulosData')) : {};
+                modulosData[moduloId] = formData;
+                sessionStorage.setItem('modulosData', JSON.stringify(modulosData));
+                // Update data brought from the form that is relevant to this template
+                // Update Name
+                var newName = modulosData[moduloId] && modulosData[moduloId]['nombre'] ? modulosData[moduloId]['nombre'] : 'NameNotFound';
+                $(`.list-group-item[data-modulo-id="${moduloId}"] .modulo-name`).text(newName);
+                break;
 
-        // Store the formData object in sessionStorage or another temporary storage
-        var modulosData = sessionStorage.getItem('modulosData') ? JSON.parse(sessionStorage.getItem('modulosData')) : {};
-        modulosData[moduloId] = formData;
-        sessionStorage.setItem('modulosData', JSON.stringify(modulosData));
+            case 'sesion':
 
-        var newName = modulosData[moduloId] && modulosData[moduloId]['nombre'] ? modulosData[moduloId]['nombre'] : 'Default Name';
+                var sesionId = form.data('sesion-id');
+                var sesionesData = sessionStorage.getItem('sesionesData') ? JSON.parse(sessionStorage.getItem('sesionesData')) : {};
+                sesionesData[sesionId] = formData;
+                sessionStorage.setItem('sesionesData', JSON.stringify(sesionesData));
+                // Update data brought from the form that is relevant to this template
+                // Update Name
+                var newName = sesionesData[sesionId] && sesionesData[sesionId]['nombre'] ? sesionesData[sesionId]['nombre'] : 'NameNotFound';
+                $(`.list-group-item[data-sesion-id="${sesionId}"] .sesion-name`).text(newName);
+                // Update Type
+                // Since this is a select, we need to manually bring the descriptions
+                const tipoDescriptions = {
+                  'TI': 'Trabajo Individual',
+                  'TA': 'Trabajo Asincronico',
+                };
+                var newType = sesionesData[sesionId] && sesionesData[sesionId]['tipo'] ? tipoDescriptions[sesionesData[sesionId]['tipo']] : 'TipoNotFound';
+                $(`.list-group-item[data-sesion-id="${sesionId}"] .tipo-name`).text(newType);
+                break;
 
-        $(`[data-modulo-id="${moduloId}"] .modulo-name`).text(newName);
+
+        }
 
         // Close the modal
-        $('#editModuloModal').modal('hide');
+        $('#editModal').modal('hide');
 
-        // Update the UI as needed to indicate the changes are pending
-        // This could be adding a visual indicator or updating text
-
-        // Prevent the actual submission
         return false;
     });
 
-
-    // Initialize sortable for 'modulos'
-    new Sortable(document.getElementById('modulos-container'), {
-        group: 'modulos',
-        animation: 150,
-        fallbackOnBody: true,
-        handle: ".handle",
-        swapThreshold: 0.65,
-        filter: ".btn-link",
-        preventOnFilter: false
-    });
-
-    // Initialize sortable for each 'sesiones' container within modulos
-    document.querySelectorAll('[data-group="sesiones"]').forEach(function(el) {
-        new Sortable(el, {
-            group: 'sesiones',
-            animation: 150,
-            fallbackOnBody: true,
-            handle: ".handle",
-            swapThreshold: 0.65,
-            filter: ".btn-link",
-            preventOnFilter: false
-        });
-    });
-
-    // Initialize sortable for each 'clases' container within sesiones
-    document.querySelectorAll('[data-group="clases"]').forEach(function(el) {
-        new Sortable(el, {
-            group: 'clases',
-            animation: 150,
-            fallbackOnBody: true,
-            handle: ".handle",
-            swapThreshold: 0.65,
-            filter: ".btn-link",
-            preventOnFilter: false
-        });
-    });
+    initializeSortable('modulos');
+    initializeSortable('sesiones');
+    initializeSortable('clases');
 
     document.querySelectorAll('.delete-clase').forEach(button => {
         button.addEventListener('click', function () {
             const claseId = this.getAttribute('data-clase-id');
             const claseElement = document.querySelector(`.list-group-item[data-clase-id="${claseId}"]`);
-            claseElement.style.display = 'none'; // Optionally hide the element
+            claseElement.style.display = 'none';
             const deletedInput = document.getElementById('deletedClases');
             let deletedIds = deletedInput.value ? deletedInput.value.split(',') : [];
             if (!deletedIds.includes(claseId)) {
@@ -246,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             deletedInput.value = deletedIds.join(',');
 
-            // Rest of the deletion logic
         });
     });
     // Handle deletion of Sesions
@@ -254,8 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function () {
             const sesionId = this.getAttribute('data-sesion-id');
             const sesionElement = document.querySelector(`.list-group-item[data-sesion-id="${sesionId}"]`);
-            sesionElement.style.display = 'none'; // Optionally hide the element
-            // ... rest of the deletion logic for Sesions
+            sesionElement.style.display = 'none';
         });
     });
 
@@ -264,12 +259,25 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function () {
             const moduloId = this.getAttribute('data-modulo-id');
             const moduloElement = document.querySelector(`.list-group-item[data-modulo-id="${moduloId}"]`);
-            moduloElement.style.display = 'none'; // Optionally hide the element
-            // ... rest of the deletion logic for Modulos
+            moduloElement.style.display = 'none';
         });
     });
 
     });
+
+function initializeSortable(groupName) {
+    document.querySelectorAll(`[data-group="${groupName}"]`).forEach(function(el) {
+        new Sortable(el, {
+            group: groupName,
+            animation: 150,
+            fallbackOnBody: true,
+            handle: ".handle",
+            swapThreshold: 0.65,
+            filter: ".btn-link",
+            preventOnFilter: false
+        });
+    });
+}
 </script>
 {% endblock extrajs %}
 

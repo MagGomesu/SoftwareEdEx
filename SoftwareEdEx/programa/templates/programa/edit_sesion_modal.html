@@ -1,0 +1,15 @@
+{% load widget_tweaks %}
+<form method="post" data-model-name="sesion" data-sesion-id="{{ sesion_id }}" autocomplete='off'>
+  {% csrf_token %}
+<div class="form-row">
+    <div class="form-group col-12">
+        <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+        {{ form.nombre|add_class:'form-control' }}
+    </div>
+    <div class="form-group col-md-12">
+        <label for="{{ form.tipo.id_for_label }}">Tipo:</label>
+        {{ form.tipo|add_class:'form-control' }}
+    </div>
+</div>
+  <button type="submit" class="btn btn-primary save-button">Guardar</button>
+</form>

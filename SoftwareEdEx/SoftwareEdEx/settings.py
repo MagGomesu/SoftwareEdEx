@@ -38,22 +38,21 @@ ALLOWED_HOSTS = []
 # settings.py
 
 JAZZMIN_SETTINGS = {
-    "custom_links": {
-        "programa": [
-            {
-                "name": "Programas",
-                "url": "view_programa",  # Assuming 'programa' is your app name
-                "icon": "fas fa-circle",
-                "permissions": ["admin.view_programa"]  # Adjust the permission as needed
-            },
-        ]
-    },
-    # ... other settings
+	"custom_links": {
+		"programa": [
+			{
+				"name": "Programas",
+				"url": "view_programa",  # Assuming 'programa' is your app name
+				"icon": "fas fa-circle",
+				"permissions": ["admin.view_programa"]  # Adjust the permission as needed
+			},
+		]
+	},
+	# ... other settings
 }
 
-
-
 INSTALLED_APPS = [
+	'widget_tweaks',
 	'jazzmin',
 	'django.contrib.admin',
 	'django.contrib.auth',
@@ -140,8 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static',]
-
+STATICFILES_DIRS = [BASE_DIR / 'static', ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

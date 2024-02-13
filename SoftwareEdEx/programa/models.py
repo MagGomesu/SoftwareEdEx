@@ -71,8 +71,20 @@ class Modulo(models.Model):
 
 #TODO: Definir un valor por defecto donde - Una sesion puede ser "trabajo individual" o "trabajo asincronico"
 class Sesion(models.Model):
+
+    # Tipo descriptions are also manually set at programa/edit_programa in the javascript block
+    TIPO_CHOICES = [
+        ('TI', 'Trabajo Individual'),
+        ('TA', 'Trabajo Asincronico'),
+    ]
+
     modulo = models.ForeignKey(Modulo, related_name='sesiones', on_delete=models.CASCADE)
     nombre = models.CharField(max_length=255)
+    tipo = models.CharField(
+        max_length=5,
+        choices=TIPO_CHOICES,
+        default='TI'
+    )
     orden_sesion = models.PositiveIntegerField()
 
     class Meta:

@@ -1,29 +1,47 @@
-from .forms import ProgramaFilterForm
 from django.contrib.admin.sites import site
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from .forms import ProgramaForm
-from .models import Programa
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import redirect
-from django.http import HttpResponse
-from .models import Clase
 from django.db import transaction
+from django.http import (
+    HttpResponseRedirect,
+    HttpResponse
+)
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404
+)
+from django.urls import reverse
+from .forms import (
+    ProgramaFilterForm,
+    SesionForm,
+    ProgramaForm,
+    ModuloForm
+)
+from .models import (
+    Programa,
+    Sesion,
+    Modulo,
+    Clase
+)
 
-from django.shortcuts import get_object_or_404, render
-from .models import Modulo
-from .forms import ModuloForm
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ModuloForm
-from .models import Modulo
-
+def edit_sesion(request, pk):
+    item = get_object_or_404(Sesion, pk=pk)
+    form = SesionForm(instance=item)
+    context = {
+        'form': form,
+        'sesion_id': pk,
+    }
+    return render(request, 'programa/edit_sesion_modal.html', context)
 
 def edit_modulo(request, pk):
     item = get_object_or_404(Modulo, pk=pk)
     form = ModuloForm(instance=item)
-    return render(request, 'programa/edit_modulo_modal.html', {'form': form})
+    context = {
+        'form': form,
+        'modulo_id': pk,
+    }
+    return render(request, 'programa/edit_modulo_modal.html', context)
+
 
 
 def save_programa(request):
